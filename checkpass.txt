@@ -1,0 +1,68 @@
+using UnityEditor;
+using Vuforia;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+using System.Text.RegularExpressions;
+using System;
+using UnityEngine.SceneManagement;
+using System.IO.Ports;
+public class checkpassword : MonoBehaviour {
+
+	public SerialPort serial= new SerialPort("COM4",9600);
+	private bool lightState=false;
+	[SerializeField]
+
+	string abcd;
+	String[] Lines;
+	string line;
+	public InputField abc;
+	public void LoadByIndex(int sceneIndex)
+	{
+		SceneManager.LoadScene (sceneIndex);
+	}
+	public void ButtonPressed()
+	{
+		if (serial.IsOpen == false) {
+			serial.Open ();
+		}
+		Debug.Log (EventSystem.current.currentSelectedGameObject.name);
+		string buttonValue = EventSystem.current.currentSelectedGameObject.name;
+			//InputField.text = buttonValue;
+		if (buttonValue != "ok") {
+			
+			abc.text += buttonValue;
+			abcd += buttonValue;
+			Debug.Log (abcd);
+		} 
+		else {
+			System.IO.StreamReader file = 
+				new System.IO.StreamReader (@"G:/project/unity/AuglockUIcreation/locks/maindoor.txt");  
+			
+			line = file.ReadLine ();
+			file.Close (); 
+			Debug.Log ("the password is" + line);
+			int i;
+			if (abcd == line) {
+				//Debug.Log ("logged in");
+				if (lightState == false) {
+
+					serial.Write ("A");
+					lightState = true;
+				} 
+			else {
+					serial.Write ("0");
+					lightState = false;
+				}
+
+			} else {
+				LoadByIndex (5);
+			}
+		}
+
+
+	}
+
+}

@@ -1,0 +1,72 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using System;
+using System.Text.RegularExpressions;
+using UnityEngine.UI;
+public class adddoor : MonoBehaviour {
+
+	public GameObject doorname;
+	public GameObject password;
+	private string Doorname;
+	private string Password;
+	private string form;
+	void Start () {
+		
+	}
+	public void SubmitButton()
+	{
+		bool UN=false;
+		bool PW=false;
+		//print ("Registration successful");
+		if (Doorname != "") {
+			if (!System.IO.File.Exists (@"G:/project/unity/AuglockUIcreation/locks/" + Doorname + ".txt")) {
+				UN = true;
+			} else {
+				Debug.LogWarning ("doorname already exists");
+			}
+		}
+		else{Debug.LogWarning ("doorname field empty");}
+		if (Password != "") {
+			if (Password.Length == 6) {
+				PW = true;
+			} else {
+				Debug.LogWarning ("password must be 6 characters long");
+			}
+		} 
+		else {
+			Debug.LogWarning ("password field empty");
+		}
+		if (UN == true && PW == true) {
+			//form = (Doorname + "\n" + Password);
+			form=(Password);
+			System.IO.File.WriteAllText (@"G:/project/unity/AuglockUIcreation/locks/" + Doorname + ".txt", form);
+			doorname.GetComponent<InputField> ().text="";
+			password.GetComponent<InputField> ().text="";
+		}
+	}
+	
+	// Update is called once per frame
+	void Update () {
+		if (Input.GetKeyDown (KeyCode.Tab)) {
+			if (doorname.GetComponent<InputField> ().isFocused) {
+				password.GetComponent<InputField> ().Select ();
+			}
+		}
+		if (Input.GetKeyDown (KeyCode.Return)) {
+			if (Password != "" && Doorname != "") {
+				//if (System.RegularExpressions.Regex.IsMatch ("^[0-9]",Password)) {
+				
+					SubmitButton ();
+
+				/*} else {
+					Debug.LogWarning("accept only digits");
+				}*/
+			}
+		}
+		Doorname = doorname.GetComponent<InputField> ().text;
+		Password = password.GetComponent<InputField> ().text;
+
+		
+	}
+}
